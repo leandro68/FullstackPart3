@@ -53,26 +53,43 @@ app.delete('/api/persons/:id', ( request, response) => {
   response.status(204).end()
 })
 
+// app.post('/api/persons', (request, response) => {
+//   const body = request.body
+//   console.log(body.name,body.number)  
+//   if(!body.name || !body.number){
+//     console.log('name or phone missing')
+//     return response.status(400).json({error: 'name or phone missing'})
+//   }
+
+//   if (persons.find(person => person.name === body.name)){
+//     console.log('name must be unique')
+//     return response.status(400).json({error: 'name must be unique'})
+//   }
+
+//   const person = {
+//     id: Math.floor(Math.random()*10e16),
+//     name: body.name,
+//     number: body.number
+//   }
+//   persons = persons.concat(person)
+//   response.json(person)
+// })
+
 app.post('/api/persons', (request, response) => {
   const body = request.body
   console.log(body.name,body.number)  
-  if(!body.name || !body.number){
-    console.log('name or phone missing')
-    return response.status(400).json({error: 'name or phone missing'})
+  if (body.name === undefined || body.number === undefined) {
+    return response.status(400).json({ error: 'name or number missing' })
   }
 
-  if (persons.find(person => person.name === body.name)){
-    console.log('name must be unique')
-    return response.status(400).json({error: 'name must be unique'})
-  }
-
-  const person = {
-    id: Math.floor(Math.random()*10e16),
+  const person = new Person({
     name: body.name,
-    number: body.number
-  }
-  persons = persons.concat(person)
-  response.json(person)
+    number: body.number,
+  })
+
+  person.save().then(savedPerson => {
+    response.json(savedPerson)
+  })
 })
 
 
