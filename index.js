@@ -39,23 +39,25 @@ app.get('/api/persons', (request, response) => {
 })
 
 app.get('/info', (request, response) => {
-  response.send(`<p>Phonebook has info for ${persons.length} people</p>
+  Person.find({}).then(persons => response.send(`<p>Phonebook has info for ${persons.length} people</p>
                  <br/>
-                 <p>${Date()}</p>`)
+                 <p>${Date()}</p>`))
 })
 
 app.get('/api/persons/:id', ( request, response ) => {
-  const id = Number(request.params.id)
-  const person = persons.find(person => person.id === id)
-  console.log(person)
-  if (person) {
-    response.json(person)
-  }
-  else {
-    response.status(404).end()
-  }
+  Person.findById(request.params.id)
+    .then(person => {
+      if (person) {
+        response.json(person)
+      } else {
+        response.status(404).end()
+      }
+    })
+    .catch(error => {
+      console.log(error)
+      response.status(500).end()
+    })
 })
-
 
 app.delete('/api/persons/:id', (request, response, next) => {
   Person.findByIdAndDelete(request.params.id)
