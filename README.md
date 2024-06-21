@@ -8,3 +8,4 @@ ___
 ## Link to online app
 [link to backend in Render](https://fullstackpart3-sisk.onrender.com)
 
+Exercise 3.16
