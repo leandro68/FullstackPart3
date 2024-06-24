@@ -13,6 +13,7 @@ app.use(express.json())
 
 app.use(express.static('dist'))
 
+// eslint-disable-next-line no-unused-vars
 morgan.token('body', (req, res) => JSON.stringify(req.body))
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'))
 
@@ -21,16 +22,14 @@ const errorHandler = (error, request, response, next) => {
   console.log('Error registrado')
   if (error.name === 'CastError') {
     return response.status(400).send({ error: 'malformatted id' })
-  } 
+  }
   else if (error.name === 'ValidationError') {
     return response.status(400).json({ error: error.message })
   }
   next(error)
 }
 
-let persons = []
-
-
+//let persons = []
 
 app.get('/', (request, response) => {
   response.send('<h1>Welcome to phonebook app</h1>')
@@ -63,7 +62,7 @@ app.get('/api/persons/:id', ( request, response ) => {
 
 app.delete('/api/persons/:id', (request, response, next) => {
   Person.findByIdAndDelete(request.params.id)
-    .then(result => {
+    .then(() => {
       response.status(204).end()
     })
     .catch(error => next(error))
@@ -72,12 +71,12 @@ app.delete('/api/persons/:id', (request, response, next) => {
 
 app.post('/api/persons', (request, response, next) => {
   const body = request.body
-  
+
   if (body.name === undefined || body.number === undefined) {
     return response.status(400).json({ error: 'name or number missing' })
   }
 
-  console.log('name:',body.name,typeof(body.name),'number:',body.number)  
+  console.log('name:',body.name,typeof(body.name),'number:',body.number)
   const person = new Person({
     name: body.name,
     number: body.number,
@@ -91,7 +90,7 @@ app.post('/api/persons', (request, response, next) => {
 })
 
 app.put('/api/persons/:id', (request, response, next) => {
-  const { name, number} = request.body
+  const { name, number } = request.body
 
   Person.findByIdAndUpdate(request.params.id, { name, number }, { new: true, runValidators: true, context: 'query' })
     .then(updatedNote => {
